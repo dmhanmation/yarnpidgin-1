@@ -892,7 +892,7 @@ const audioMap = {
   "tori full ground": "tori-full-ground.mp3.m4a",
   "how you dey": "how-you-dey.mp3.m4a", "i dey kamkpe": "i-dey-kampe.mp3.m4a",
   "longest time": "longest-time.mp3.m4a",
-  "wetin dey happen": "wetin-de-happen.mp3.m4a",
+  "wetin dey happen": "wetin-de-sup.mp3.m4a",
   "wetin dey sup": "wetin-de-sup.mp3.m4a",
   "i no sabi": "i-no-sabi.mp3.m4a", "i no know": "i-no-know.mp3.m4a",
   "make we go buka": "make-we-go-buka.mp3.m4a",
@@ -1718,33 +1718,15 @@ function completeRegistration() {
 
   // Send to Google Sheets via hidden iframe trick (bypasses CORS)
   const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScrThpc-uGE2n6VUGFA2048gtm-78VlFb5cBxdMlotrCA6lOg/formResponse';
-  const params = new URLSearchParams({
-    'entry.1040101992': name,
-    'entry.263723819': email,
-    'entry.2002803113': country,
-    'submit': 'Submit'
-  });
-  const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.name = 'hidden_iframe';
-  document.body.appendChild(iframe);
-  const form = document.createElement('form');
-  form.action = formUrl;
-  form.method = 'POST';
-  form.target = 'hidden_iframe';
-  params.forEach((value, key) => {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = key;
-    input.value = value;
-    form.appendChild(input);
-  });
-  document.body.appendChild(form);
-  form.submit();
-  setTimeout(() => {
-    iframe.remove();
-    form.remove();
-  }, 3000);
+  // Use image src trick to submit form data - most reliable cross-origin method
+  const entries = [
+    ['entry.1040101992', name],
+    ['entry.263723819', email],
+    ['entry.2002803113', country]
+  ];
+  const queryString = entries.map(([k,v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v)).join('&');
+  const img = new Image();
+  img.src = formUrl + '?' + queryString;
 
   document.getElementById('registration').classList.add('hide');
   showBadgeToast('Welcome ' + name + '! Oya make we start! 🎉');
