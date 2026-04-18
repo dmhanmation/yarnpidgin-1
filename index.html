@@ -1716,16 +1716,35 @@ function completeRegistration() {
   localStorage.setItem('yp_registered', JSON.stringify(userData));
   localStorage.setItem('yp_username', name);
 
-  // Send to Google Sheets via form submission
+  // Send to Google Sheets via hidden iframe trick (bypasses CORS)
   const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScrThpc-uGE2n6VUGFA2048gtm-78VlFb5cBxdMlotrCA6lOg/formResponse';
-  fetch(formUrl, {
-    method: 'POST', mode: 'no-cors',
-    body: new URLSearchParams({
-      'entry.1040101992': name,
-      'entry.263723819': email,
-      'entry.2002803113': country
-    })
-  }).catch(() => {}); // Silently fail if offline
+  const params = new URLSearchParams({
+    'entry.1040101992': name,
+    'entry.263723819': email,
+    'entry.2002803113': country,
+    'submit': 'Submit'
+  });
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.name = 'hidden_iframe';
+  document.body.appendChild(iframe);
+  const form = document.createElement('form');
+  form.action = formUrl;
+  form.method = 'POST';
+  form.target = 'hidden_iframe';
+  params.forEach((value, key) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = value;
+    form.appendChild(input);
+  });
+  document.body.appendChild(form);
+  form.submit();
+  setTimeout(() => {
+    iframe.remove();
+    form.remove();
+  }, 3000);
 
   document.getElementById('registration').classList.add('hide');
   showBadgeToast('Welcome ' + name + '! Oya make we start! 🎉');
