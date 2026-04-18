@@ -1718,15 +1718,43 @@ function completeRegistration() {
 
   // Send to Google Sheets via hidden iframe trick (bypasses CORS)
   const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScrThpc-uGE2n6VUGFA2048gtm-78VlFb5cBxdMlotrCA6lOg/formResponse';
-  // Use image src trick to submit form data - most reliable cross-origin method
-  const entries = [
-    ['entry.1040101992', name],
-    ['entry.263723819', email],
-    ['entry.2002803113', country]
-  ];
-  const queryString = entries.map(([k,v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v)).join('&');
-  const img = new Image();
-  img.src = formUrl + '?' + queryString;
+  // Submit via hidden iframe with direct form post
+  try {
+    const iframeName = 'yp_submit_' + Date.now();
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('name', iframeName);
+    iframe.setAttribute('style', 'display:none;position:fixed;top:-9999px');
+    document.body.appendChild(iframe);
+    
+    const tempForm = document.createElement('form');
+    tempForm.setAttribute('method', 'post');
+    tempForm.setAttribute('action', formUrl);
+    tempForm.setAttribute('target', iframeName);
+    
+    const fields = {
+      'entry.1040101992': name,
+      'entry.263723819': email,
+      'entry.2002803113': country
+    };
+    
+    Object.keys(fields).forEach(key => {
+      const field = document.createElement('input');
+      field.setAttribute('type', 'hidden');
+      field.setAttribute('name', key);
+      field.setAttribute('value', fields[key]);
+      tempForm.appendChild(field);
+    });
+    
+    document.body.appendChild(tempForm);
+    tempForm.submit();
+    
+    setTimeout(() => {
+      document.body.removeChild(tempForm);
+      document.body.removeChild(iframe);
+    }, 5000);
+  } catch(e) {
+    console.log('Form submit error:', e);
+  }
 
   document.getElementById('registration').classList.add('hide');
   showBadgeToast('Welcome ' + name + '! Oya make we start! 🎉');
