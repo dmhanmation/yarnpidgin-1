@@ -1717,13 +1717,13 @@ function completeRegistration() {
   localStorage.setItem('yp_username', name);
 
   // Send to Google Sheets via form submission
-  const formUrl = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+  const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLScrThpc-uGE2n6VUGFA2048gtm-78VlFb5cBxdMlotrCA6lOg/formResponse';
   fetch(formUrl, {
     method: 'POST', mode: 'no-cors',
     body: new URLSearchParams({
-      'entry.NAME_FIELD': name,
-      'entry.EMAIL_FIELD': email,
-      'entry.COUNTRY_FIELD': country
+      'entry.1040101992': name,
+      'entry.263723819': email,
+      'entry.2002803113': country
     })
   }).catch(() => {}); // Silently fail if offline
 
