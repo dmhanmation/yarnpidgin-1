@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="YarnPidgin">
 <meta name="theme-color" content="#1a7a4a">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="data:application/json,{%22name%22:%22YarnPidgin%22,%22short_name%22:%22YarnPidgin%22,%22start_url%22:%22/yarnpidgin-1/%22,%22display%22:%22standalone%22,%22background_color%22:%22%231a7a4a%22,%22theme_color%22:%22%231a7a4a%22}">
 <link rel="apple-touch-icon" href="cover.png">
 
 <meta name="mobile-web-app-capable" content="yes">
@@ -18,7 +18,7 @@
 <meta name="apple-mobile-web-app-title" content="YarnPidgin">
 <meta name="application-name" content="YarnPidgin">
 <meta name="theme-color" content="#1a7a4a">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="data:application/json,{%22name%22:%22YarnPidgin%22,%22short_name%22:%22YarnPidgin%22,%22start_url%22:%22/yarnpidgin-1/%22,%22display%22:%22standalone%22,%22background_color%22:%22%231a7a4a%22,%22theme_color%22:%22%231a7a4a%22}">
 <link rel="apple-touch-icon" href="icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Bricolage+Grotesque:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -697,7 +697,7 @@ body { font-family: "Bricolage Grotesque", sans-serif; background: var(--white);
       <option value="Lebanon">Lebanon</option>
       <option value="Other">Other</option>
     </select>
-    <button class="reg-btn" onclick="completeRegistration()">Start Learning Free →</button>
+    <button class="reg-btn" id="regSubmitBtn">Start Learning Free →</button>
     <p class="reg-note">No spam. We only send updates about YarnPidgin and the Nigerian Pidgin English dictionary.</p>
   </div>
 </div>
@@ -1953,6 +1953,9 @@ window.addEventListener('appinstalled', () => {
 // ===== INIT =====
 checkRegistration();
 renderEssentialPhrases();
+// Attach registration button safely after DOM is ready
+const regBtn = document.getElementById('regSubmitBtn');
+if (regBtn) regBtn.addEventListener('click', completeRegistration);
 renderModulesHome();
 </script>
 
